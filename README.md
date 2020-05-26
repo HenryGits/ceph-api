@@ -1,4 +1,5 @@
-# go-ceph - Go bindings for Ceph APIs
+# 以Restful API的形式，轻松管理内部和外部ceph集群。。。
+## go-ceph - Go bindings for Ceph APIs
 
 [![Build Status](https://travis-ci.org/ceph/go-ceph.svg)](https://travis-ci.org/ceph/go-ceph) [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/ceph/go-ceph) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/ceph/go-ceph/master/LICENSE)
 
