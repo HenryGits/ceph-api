@@ -2,7 +2,6 @@ package web
 
 /**
  封装请求返回值
-2019年7月17日
 结构体中的声明变量首字母必须大写 不然无法被beego解析
 */
 type ResponseBean struct {

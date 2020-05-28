@@ -51,6 +51,8 @@ type poolService struct {
 }
 
 func (p poolService) GetPools() ([]string, error) {
+	log.Info("==>GetPools")
+
 	//获取调go-ceph获取pool
 	conn, err := utils.GetConnection("192.168.113.215:6789,192.168.113.216:6789,192.168.113.217:6789", "admin", "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA==")
 	log.Info("获取连接成功! GetInstanceID: ", conn.GetInstanceID())
@@ -60,7 +62,7 @@ func (p poolService) GetPools() ([]string, error) {
 	}
 	pools, err := conn.ListPools()
 	log.Info("Pools: ", pools)
-	return pools, nil
+	return pools, err
 }
 
 func (p poolService) GetPoolByName(poolName string) ([]datamodels.Pool, error) {

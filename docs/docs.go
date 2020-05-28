@@ -38,15 +38,6 @@ var doc = `{
                     "ceph池模块"
                 ],
                 "summary": "获取到所有的pool",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Some ID",
-                        "name": "some_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "ok",

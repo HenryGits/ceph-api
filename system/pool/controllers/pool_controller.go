@@ -3,11 +3,9 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/ceph/go-ceph/system/pool/services"
-	jsoniter "github.com/json-iterator/go"
-
 	_ "github.com/ceph/go-ceph/system/web"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"
@@ -19,20 +17,25 @@ type PoolController struct {
 	// so all fields are request-scoped by-default, only dependency injection is able to set
 	// custom fields like the Service which is the same for all requests (static binding)
 	// and the Session which depends on the current context (dynamic binding).
-	ctx iris.Context
+	Ctx iris.Context
 
 	// Our UserService, it's an interface which
 	// is binded from the main application.
-	poolService services.IPoolService
+	PoolService services.IPoolService
 
 	// Session, binded using dependency injection from the main.go.
-	session *sessions.Session
+	Session *sessions.Session
 }
 
 const userIDKey = "UserID"
 
+/**
+ * 日志模块
+ */
+var log = iris.New().Logger()
+
 func (c *PoolController) getCurrentUserID() int64 {
-	userID := c.session.GetInt64Default(userIDKey, 0)
+	userID := c.Session.GetInt64Default(userIDKey, 0)
 	return userID
 }
 
@@ -41,7 +44,7 @@ func (c *PoolController) isLoggedIn() bool {
 }
 
 func (c *PoolController) logout() {
-	c.session.Destroy()
+	c.Session.Destroy()
 }
 
 // GetPools handles GET: http://localhost:8080/v1/pool/pools.
@@ -50,20 +53,26 @@ func (c *PoolController) logout() {
 // @Description 获取到所有的pool
 // @Accept  application/json
 // @Produce  application/json
-// @Param   some_id     path    int     true        "Some ID"
 // @Success 200 {string} string	"ok"
 // @Failure 400 {object} web.APIError "We need ID!!"
 // @Failure 404 {object} web.APIError "Can not find ID"
 // @Failure 500 {object} web.APIError "Server Error"
 // @Router /pool/pools [get]
 func (c *PoolController) GetPools() mvc.Result {
-	pools, err := c.poolService.GetPools()
-	jsonStr, _ := jsoniter.Marshal(pools)
-	fmt.Println(jsonStr)
-	return mvc.View{
-		Code: 200,
-		Name: "",
-		Data: jsonStr,
-		Err:  err,
+	var result mvc.Result
+	pools, err := c.PoolService.GetPools()
+	if err != nil {
+		result = mvc.View{
+			Code: 500,
+			Err:  err,
+		}
+	} else {
+		jsonStr, _ := jsoniter.Marshal(pools)
+		result = mvc.View{
+			Code: 200,
+			Data: jsonStr,
+		}
 	}
+	log.Info("Response: ", result)
+	return result
 }

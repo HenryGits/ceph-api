@@ -20,12 +20,6 @@ paths:
       consumes:
       - application/json
       description: 获取到所有的pool
-      parameters:
-      - description: Some ID
-        in: path
-        name: some_id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
