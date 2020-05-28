@@ -1,0 +1,77 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "基于go-ceph封装的Rest Api",
+        "title": "Ceph Rest Api",
+        "contact": {},
+        "license": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/pool/pools": {
+            "get": {
+                "description": "获取到所有的pool",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ceph池模块"
+                ],
+                "summary": "获取到所有的pool",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Some ID",
+                        "name": "some_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "We need ID!!",
+                        "schema": {
+                            "$ref": "#/definitions/web.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Can not find ID",
+                        "schema": {
+                            "$ref": "#/definitions/web.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.APIError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "web.APIError": {
+            "type": "object",
+            "properties": {
+                "errorCode": {
+                    "type": "integer"
+                },
+                "errorMessage": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
