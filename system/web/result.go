@@ -11,7 +11,7 @@ type ResponseBean struct {
 }
 
 func GenSuccessData(data interface{}) *ResponseBean {
-	return &ResponseBean{200, "", data}
+	return &ResponseBean{200, "success", data}
 }
 
 func GenSuccessMsg(msg string) *ResponseBean {

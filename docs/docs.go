@@ -40,9 +40,9 @@ var doc = `{
                 "summary": "获取到所有的pool",
                 "responses": {
                     "200": {
-                        "description": "ok",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/web.ResponseBean"
                         }
                     },
                     "400": {
@@ -75,6 +75,20 @@ var doc = `{
                     "type": "integer"
                 },
                 "errorMessage": {
+                    "type": "string"
+                }
+            }
+        },
+        "web.ResponseBean": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
                     "type": "string"
                 }
             }

@@ -4,10 +4,8 @@ package controllers
 
 import (
 	"github.com/ceph/go-ceph/system/pool/services"
-	_ "github.com/ceph/go-ceph/system/web"
-	jsoniter "github.com/json-iterator/go"
+	"github.com/ceph/go-ceph/system/web"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"
 )
 
@@ -53,25 +51,18 @@ func (c *PoolController) logout() {
 // @Description 获取到所有的pool
 // @Accept  application/json
 // @Produce  application/json
-// @Success 200 {string} string	"ok"
+// @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.APIError "We need ID!!"
 // @Failure 404 {object} web.APIError "Can not find ID"
 // @Failure 500 {object} web.APIError "Server Error"
 // @Router /pool/pools [get]
-func (c *PoolController) GetPools() mvc.Result {
-	var result mvc.Result
+func (c *PoolController) GetPools() *web.ResponseBean {
+	var result *web.ResponseBean
 	pools, err := c.PoolService.GetPools()
 	if err != nil {
-		result = mvc.View{
-			Code: 500,
-			Err:  err,
-		}
+		result = web.GenFailedMsg(err.Error())
 	} else {
-		jsonStr, _ := jsoniter.Marshal(pools)
-		result = mvc.View{
-			Code: 200,
-			Data: jsonStr,
-		}
+		result = web.GenSuccessData(pools)
 	}
 	log.Info("Response: ", result)
 	return result

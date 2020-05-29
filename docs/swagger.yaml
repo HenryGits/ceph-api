@@ -7,6 +7,15 @@ definitions:
       errorMessage:
         type: string
     type: object
+  web.ResponseBean:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -24,9 +33,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: ok
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/web.ResponseBean'
         "400":
           description: We need ID!!
           schema:
