@@ -45,16 +45,15 @@ func (c *PoolController) logout() {
 	c.Session.Destroy()
 }
 
-// GetPools handles GET: http://localhost:8080/v1/pool/pools.
 // @tags ceph池模块
 // @Summary 获取到所有的pool
 // @Description 获取到所有的pool
 // @Accept  application/json
 // @Produce  application/json
 // @Success 200 {object} web.ResponseBean
-// @Failure 400 {object} web.APIError "We need ID!!"
-// @Failure 404 {object} web.APIError "Can not find ID"
-// @Failure 500 {object} web.APIError "Server Error"
+// @Failure 400 {object} web.ResponseBean
+// @Failure 404 {object} web.ResponseBean
+// @Failure 500 {object} web.ResponseBean
 // @Router /pool/pools [get]
 func (c *PoolController) GetPools() *web.ResponseBean {
 	var result *web.ResponseBean
@@ -62,7 +61,30 @@ func (c *PoolController) GetPools() *web.ResponseBean {
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
-		result = web.GenSuccessData(pools)
+		result = web.GenSuccessMsg(pools)
+	}
+	log.Info("Response: ", result)
+	return result
+}
+
+// @tags ceph池模块
+// @Summary 通过名称获取对应池信息
+// @Description 获取到所有的pool
+// @Accept  application/json
+// @Produce  application/json
+// @Param poolName path string true "池名称"
+// @Success 200 {object} web.ResponseBean
+// @Failure 400 {object} web.ResponseBean
+// @Failure 404 {object} web.ResponseBean
+// @Failure 500 {object} web.ResponseBean
+// @Router /pool/{poolName} [get]
+func (c *PoolController) GetPoolByName(poolName string) *web.ResponseBean {
+	var result *web.ResponseBean
+	pools, err := c.PoolService.GetPoolByName(poolName)
+	if err != nil {
+		result = web.GenFailedMsg(err.Error())
+	} else {
+		result = web.GenSuccessMsg(pools)
 	}
 	log.Info("Response: ", result)
 	return result

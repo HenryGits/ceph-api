@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ceph/go-ceph/rados"
 	"github.com/ceph/go-ceph/rbd"
+	"github.com/ceph/go-ceph/system/utils"
 	"os"
 )
 
@@ -54,32 +55,69 @@ func main() {
 		}
 	}
 
-	conn, err := getConnection("192.168.113.215:6789,192.168.113.216:6789,192.168.113.217:6789", "admin", "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA==")
+	conn, err := utils.GetConnection("192.168.113.215:6789,192.168.113.216:6789,192.168.113.217:6789",
+		"admin", "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA==")
 	fmt.Println("获取连接成功! GetInstanceID: ", conn.GetInstanceID())
 	if err != nil {
 		fmt.Println("获取连接异常: ", err)
 		return
 	}
 
+	//
+	//================================================= pool池操作= =========================================================
+	//
+	// 获取
+	poolId, err := conn.GetPoolByName(DefaultPoolName)
+	fmt.Println("poolName==> ", poolId)
+	poolStr, _ := conn.GetPoolByID(poolId)
+	fmt.Println("poolStr==> ", poolStr)
+	// 创建
+	conn.MakePool("test-pool")
+	//池列表
 	pools, err := conn.ListPools()
 	fmt.Println("ListPools: ", pools)
+	// 删除
+	conn.DeletePool("test-pool")
 
+	//
+	//================================================= rbd操作= =========================================================
+	//
 	// connect to the pool
 	ioctx, err := conn.OpenIOContext(DefaultPoolName)
 	if err != nil {
 		fmt.Printf("Rbd open pool failed: %v", err)
 		return
 	}
+	fmt.Println("ioctx conn success...")
+
+	baseImageName := "test2"
+	cloneImageName := "clone-test"
+
+	_ = rbd.RemoveImage(ioctx, cloneImageName)
+	img, _ := rbd.OpenImage(ioctx, baseImageName, "")
+	//// 需要删除快照
+	//snap:=img.GetSnapshot(cloneImageName)
+	//snap.Remove()
+	// 再删除image
+	_ = rbd.TrashRemove(ioctx, baseImageName, true)
+	err = rbd.RemoveImage(ioctx, baseImageName)
+	fmt.Println("RemoveImage==>", err)
+
+	// img 列表
+	imgs, _ := rbd.GetImageNames(ioctx)
+	fmt.Println("imgs==>", imgs)
 
 	// create base image
-	baseImageName := "test"
-	_, err = rbd.Create(ioctx, baseImageName, DefaultBaseImageSize, 22, rbd.RbdFeatureLayering)
+	_, err = rbd.Create2(ioctx, baseImageName, DefaultBaseImageSize, rbd.FeatureLayering, 22)
 	if err != nil {
 		fmt.Printf("Rbd create image failed: %v", err)
 		return
 	}
 
-	img := rbd.GetImage(ioctx, baseImageName)
+	img = rbd.GetImage(ioctx, baseImageName)
+	imgSize, _ := img.GetSize()
+	fmt.Println("img==>", img)
+	fmt.Println("imgSize==>", imgSize)
 
 	// we should open base image first
 	if err := img.Open(); err != nil {
@@ -87,28 +125,29 @@ func main() {
 		return
 	}
 
-	defer img.Close()
-
-	// create snapshot
-	snapName := "test-snap"
-	snapshot, err := img.CreateSnapshot(snapName)
-	if err != nil {
-		fmt.Printf("Rbd create snapshot failed: %v", err)
-		return
-	}
-
-	// protect snapshot
-	if err := snapshot.Protect(); err != nil {
-		fmt.Printf("Rbd create snapshot failed: %v", err)
-		return
-	}
-
-	// make a clone image based on the snap shot
-	cloneImageName := "clone-test"
-	_, err = img.Clone(snapName, ioctx, cloneImageName, rbd.RbdFeatureLayering, 22)
-	if err != nil {
-		fmt.Printf("Rbd clone snapshot failed: %v", err)
-		return
-	}
-	return
+	//// create snapshot
+	//snapName := "test-snap"
+	//snapshot, err := img.CreateSnapshot(snapName)
+	//if err != nil {
+	//	fmt.Printf("Rbd create snapshot failed: %v", err)
+	//	return
+	//}
+	//
+	//// 锁定 snapshot
+	//if err := snapshot.Protect(); err != nil {
+	//	fmt.Printf("Rbd create snapshot failed: %v", err)
+	//	return
+	//}
+	//
+	//// make a clone image based on the snap shot
+	//_, err = img.Clone(snapName, ioctx, cloneImageName, rbd.RbdFeatureLayering, 22)
+	//if err != nil {
+	//	fmt.Printf("Rbd clone snapshot failed: %v", err)
+	//	return
+	//}
+	//
+	//img.Remove()
+	//
+	//imgs,_ = rbd.GetImageNames(ioctx)
+	//fmt.Println("imgs==>", imgs)
 }

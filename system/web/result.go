@@ -10,14 +10,22 @@ type ResponseBean struct {
 	Data interface{} `json:"data"`
 }
 
-func GenSuccessData(data interface{}) *ResponseBean {
-	return &ResponseBean{200, "success", data}
-}
-
-func GenSuccessMsg(msg string) *ResponseBean {
+func GenSuccess(msg string) *ResponseBean {
 	return &ResponseBean{200, msg, ""}
 }
 
+func GenSuccessMsg(data interface{}) *ResponseBean {
+	return &ResponseBean{200, "OK", data}
+}
+
+func GenOperationErrorMsg() *ResponseBean {
+	return &ResponseBean{400, "Bad Request", ""}
+}
+
+func GenNotFondMsg() *ResponseBean {
+	return &ResponseBean{404, "API Not Found", ""}
+}
+
 func GenFailedMsg(errMsg string) *ResponseBean {
-	return &ResponseBean{400, errMsg, ""}
+	return &ResponseBean{500, errMsg, ""}
 }

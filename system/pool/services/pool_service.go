@@ -23,7 +23,7 @@ type IPoolService interface {
 	/*
 		/api/pool/{pool_name}
 	*/
-	GetPoolByName(poolName string) ([]datamodels.Pool, error)
+	GetPoolByName(poolName string) (string, error)
 
 	/*
 		创建ceph存储池
@@ -65,8 +65,10 @@ func (p poolService) GetPools() ([]string, error) {
 	return pools, err
 }
 
-func (p poolService) GetPoolByName(poolName string) ([]datamodels.Pool, error) {
-	panic("implement me")
+func (p poolService) GetPoolByName(poolName string) (string, error) {
+	conn, err := utils.GetConnection("192.168.113.215:6789,192.168.113.216:6789,192.168.113.217:6789", "admin", "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA==")
+	conn.GetPoolByName(poolName)
+	return "", err
 }
 
 func (p poolService) AddPool(pool datamodels.Pool) (bool, error) {
