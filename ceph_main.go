@@ -5,6 +5,7 @@ import (
 	"github.com/ceph/go-ceph/rados"
 	"github.com/ceph/go-ceph/rbd"
 	"github.com/ceph/go-ceph/system/utils"
+	"github.com/ceph/go-ceph/system/web"
 	"os"
 )
 
@@ -55,8 +56,9 @@ func main() {
 		}
 	}
 
-	conn, err := utils.GetConnection("192.168.113.215:6789,192.168.113.216:6789,192.168.113.217:6789",
-		"admin", "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA==")
+	conf := web.ConnConfig{Key: "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA==",
+		Monitors: "192.168.113.215:6789,192.168.113.216:6789,192.168.113.217:6789", User: "admin"}
+	conn, err := utils.GetConnection(conf)
 	fmt.Println("获取连接成功! GetInstanceID: ", conn.GetInstanceID())
 	if err != nil {
 		fmt.Println("获取连接异常: ", err)

@@ -1,6 +1,7 @@
 package web
 
-type APIError struct {
-	ErrorCode    int
-	ErrorMessage string
+type ConnConfig struct {
+	Monitors string
+	User     string
+	Key      string
 }

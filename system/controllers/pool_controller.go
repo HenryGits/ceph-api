@@ -1,9 +1,7 @@
-// file: controllers/pool_controller.go
-
 package controllers
 
 import (
-	"github.com/ceph/go-ceph/system/pool/services"
+	"github.com/ceph/go-ceph/system/services"
 	"github.com/ceph/go-ceph/system/web"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
@@ -50,14 +48,15 @@ func (c *PoolController) logout() {
 // @Description 获取到所有的pool
 // @Accept  application/json
 // @Produce  application/json
+// @Param config body web.ConnConfig true "连接配置"
 // @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
 // @Router /pool/pools [get]
-func (c *PoolController) GetPools() *web.ResponseBean {
+func (c *PoolController) GetPools(config web.ConnConfig) *web.ResponseBean {
 	var result *web.ResponseBean
-	pools, err := c.PoolService.GetPools()
+	pools, err := c.PoolService.GetPools(config)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
@@ -69,7 +68,31 @@ func (c *PoolController) GetPools() *web.ResponseBean {
 
 // @tags ceph池模块
 // @Summary 通过名称获取对应池信息
-// @Description 获取到所有的pool
+// @Description 通过名称获取对应池信息
+// @Accept  application/json
+// @Produce  application/json
+// @Param poolName path string true "池名称"
+// @Param config body web.ConnConfig true "连接配置"
+// @Success 200 {object} web.ResponseBean
+// @Failure 400 {object} web.ResponseBean
+// @Failure 404 {object} web.ResponseBean
+// @Failure 500 {object} web.ResponseBean
+// @Router /pool/{poolName} [get]
+func (c *PoolController) GetPoolByName(config web.ConnConfig, poolName string) *web.ResponseBean {
+	var result *web.ResponseBean
+	pools, err := c.PoolService.GetPoolByName(config, poolName)
+	if err != nil {
+		result = web.GenFailedMsg(err.Error())
+	} else {
+		result = web.GenSuccessMsg(pools)
+	}
+	log.Info("Response: ", result)
+	return result
+}
+
+// @tags ceph池模块
+// @Summary 创建池
+// @Description 创建池
 // @Accept  application/json
 // @Produce  application/json
 // @Param poolName path string true "池名称"
@@ -77,14 +100,37 @@ func (c *PoolController) GetPools() *web.ResponseBean {
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /pool/{poolName} [get]
-func (c *PoolController) GetPoolByName(poolName string) *web.ResponseBean {
+// @Router /pool/{poolName} [post]
+func (c *PoolController) CreatePool(poolName string) *web.ResponseBean {
 	var result *web.ResponseBean
-	pools, err := c.PoolService.GetPoolByName(poolName)
+	err := c.PoolService.AddPool(poolName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
-		result = web.GenSuccessMsg(pools)
+		result = web.GenSuccess("池创建成功。")
+	}
+	log.Info("Response: ", result)
+	return result
+}
+
+// @tags ceph池模块
+// @Summary 删除池
+// @Description 删除池
+// @Accept  application/json
+// @Produce  application/json
+// @Param poolName path string true "池名称"
+// @Success 200 {object} web.ResponseBean
+// @Failure 400 {object} web.ResponseBean
+// @Failure 404 {object} web.ResponseBean
+// @Failure 500 {object} web.ResponseBean
+// @Router /pool/{poolName} [delete]
+func (c *PoolController) DeletePool(poolName string) *web.ResponseBean {
+	var result *web.ResponseBean
+	err := c.PoolService.DeletePoolByName(poolName)
+	if err != nil {
+		result = web.GenFailedMsg(err.Error())
+	} else {
+		result = web.GenSuccessMsg("删除池成功。")
 	}
 	log.Info("Response: ", result)
 	return result

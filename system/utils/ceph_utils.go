@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/ceph/go-ceph/rados"
+	"github.com/ceph/go-ceph/system/web"
 	"github.com/kataras/iris"
 	"os"
 )
@@ -20,7 +21,7 @@ const (
 /**
  * 获取Ceph连接
  */
-func GetConnection(monitors, user, key string) (*rados.Conn, error) {
+func GetConnection(config web.ConnConfig) (*rados.Conn, error) {
 	// 默认通过读取本地配置文件，创建连接
 	if FileExist(DefaultRadosConfigFile) {
 		//connect to the cluster
@@ -33,12 +34,12 @@ func GetConnection(monitors, user, key string) (*rados.Conn, error) {
 		}
 	}
 	// 通过用户传递的参数，创建ceph连接
-	conn, err := rados.NewConnWithUser(user)
+	conn, err := rados.NewConnWithUser(config.User)
 	if err != nil {
 		log.Error("建立ceph连接失败！", err)
 		return nil, nil
 	}
-	args := []string{"--client_mount_timeout", "15", "-m", monitors, "--key", key}
+	args := []string{"--client_mount_timeout", "15", "-m", config.Monitors, "--key", config.Key}
 	err = conn.ParseCmdLineArgs(args)
 	if err != nil {
 		log.Error("解析参数失败！", err)

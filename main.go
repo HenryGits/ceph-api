@@ -2,8 +2,8 @@ package main
 
 import (
 	_ "github.com/ceph/go-ceph/docs"
-	"github.com/ceph/go-ceph/system/pool/controllers"
-	poolService "github.com/ceph/go-ceph/system/pool/services"
+	"github.com/ceph/go-ceph/system/controllers"
+	"github.com/ceph/go-ceph/system/services"
 	"github.com/iris-contrib/swagger"
 	"github.com/iris-contrib/swagger/swaggerFiles"
 	"github.com/kataras/iris"
@@ -21,24 +21,19 @@ func main() {
 	// sure that your code is aligned with the Iris' MVC Architecture.
 	app.Logger().SetLevel("info")
 
-	// ---- Serve our controllers. ----
-	// Prepare our repositories and services.
-	//db, err := datasource.LoadUsers(datasource.Memory)
-	//if err != nil {
-	//	app.Logger().Fatalf("error while loading the users: %v", err)
-	//	return
-	//}
-
 	// "/pool" based mvc application.
 	pool := mvc.New(app.Party("/api/pool"))
-	// Add the basic authentication(admin:password) middleware
-	// for the /users based requests.
-	//pool.Router.Use(middleware.BasicAuth)
-	// 将PoolService绑定到Controller的服务（接口）
-	pool.Register(poolService.NewPoolService())
+	rbd := mvc.New(app.Party("/api/rbd"))
+	snap := mvc.New(app.Party("/api/snap"))
+	pool.Register(services.NewPoolService())
 	pool.Handle(new(controllers.PoolController))
+	rbd.Register(services.NewRbdService())
+	rbd.Handle(new(controllers.RbdController))
+	snap.Register(services.NewSnaphostService())
+	snap.Handle(new(controllers.SnaphostController))
 
-	url := swagger.URL("http://localhost:8080/swagger/doc.json") //The url pointing to API definition
+	//The url pointing to API definition
+	url := swagger.URL("http://localhost:8080/swagger/doc.json")
 	app.Get("/swagger/{any:path}", swagger.WrapHandler(swaggerFiles.Handler, url))
 	app.Run(
 		// Starts the web server at localhost:8080
