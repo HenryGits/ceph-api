@@ -439,7 +439,7 @@ paths:
       tags:
       - ceph snaphost模块
   /rbd/images:
-    get:
+    post:
       consumes:
       - application/json
       description: 获取到所有的image
@@ -451,7 +451,7 @@ paths:
         schema:
           $ref: '#/definitions/web.ConnConfig'
       - description: 池名称
-        in: path
+        in: query
         name: poolName
         required: true
         type: string

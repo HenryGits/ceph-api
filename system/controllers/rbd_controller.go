@@ -34,13 +34,22 @@ var rbdLog = iris.New().Logger()
 // @Accept  application/json
 // @Produce  application/json
 // @Param config body web.ConnConfig true "连接配置"
-// @Param poolName path string true "池名称"
+// @Param poolName query string true "池名称"
 // @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /rbd/images [get]
-func (c *RbdController) GetImages(config web.ConnConfig, poolName string) *web.ResponseBean {
+// @Router /rbd/images [post]
+func (c *RbdController) PostImages() *web.ResponseBean {
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	log.Info(config)
+	log.Info(poolName)
+
 	var result *web.ResponseBean
 	images, err := c.RbdService.GetImages(config)
 	if err != nil {

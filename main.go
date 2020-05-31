@@ -19,7 +19,7 @@ func main() {
 	app := iris.New()
 	// You got full debug messages, useful when using MVC and you want to make
 	// sure that your code is aligned with the Iris' MVC Architecture.
-	app.Logger().SetLevel("info")
+	app.Logger().SetLevel("debug")
 
 	// "/pool" based mvc application.
 	pool := mvc.New(app.Party("/api/pool"))

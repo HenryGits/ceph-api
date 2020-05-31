@@ -233,7 +233,7 @@ var doc = `{
             }
         },
         "/rbd/images": {
-            "get": {
+            "post": {
                 "description": "获取到所有的image",
                 "consumes": [
                     "application/json"
@@ -259,7 +259,7 @@ var doc = `{
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],
