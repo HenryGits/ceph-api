@@ -5,9 +5,9 @@ package web
 结构体中的声明变量首字母必须大写 不然无法被beego解析
 */
 type ResponseBean struct {
-	Code int         `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+	Code int         `json:"code" format:"返回码"`
+	Msg  string      `json:"msg"  format:"处理结果"`
+	Data interface{} `json:"data" format:"结果数据"`
 }
 
 const (
