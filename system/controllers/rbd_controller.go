@@ -4,8 +4,8 @@ import (
 	"github.com/ceph/go-ceph/system/services"
 	"github.com/ceph/go-ceph/system/utils"
 	"github.com/ceph/go-ceph/system/web"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/sessions"
 )
 
 type RbdController struct {

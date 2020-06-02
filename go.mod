@@ -19,11 +19,12 @@ require (
 	github.com/iris-contrib/formBinder v5.0.0+incompatible // indirect
 	github.com/iris-contrib/httpexpect v1.1.2 // indirect
 	github.com/iris-contrib/middleware/jwt v0.0.0-20191219204441-78279b78a367
-	github.com/iris-contrib/swagger v0.0.0-20190414182803-dc27bb5ee4ec
+	github.com/iris-contrib/swagger/v12 v12.0.1 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/juju/errors v0.0.0-20200330140219-3fe23663418f // indirect
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kataras/iris v11.1.1+incompatible
+	github.com/kataras/iris/v12 v12.1.8
 	github.com/klauspost/compress v1.10.6 // indirect
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/mattn/go-colorable v0.1.6 // indirect

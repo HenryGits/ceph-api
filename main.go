@@ -5,8 +5,8 @@ import (
 	"github.com/ceph/go-ceph/system/controllers"
 	"github.com/ceph/go-ceph/system/services"
 	"github.com/iris-contrib/middleware/jwt"
-	"github.com/iris-contrib/swagger"
-	"github.com/iris-contrib/swagger/swaggerFiles"
+	"github.com/iris-contrib/swagger/v12"
+	"github.com/iris-contrib/swagger/v12/swaggerFiles"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 )

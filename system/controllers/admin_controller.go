@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/ceph/go-ceph/system/web"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/sessions"
 	"time"
 )
 

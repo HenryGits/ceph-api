@@ -3,7 +3,7 @@ package utils
 import (
 	"github.com/ceph/go-ceph/rados"
 	"github.com/ceph/go-ceph/system/web"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 	"os"
 )
 
