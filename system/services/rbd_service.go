@@ -88,5 +88,5 @@ func (r rbdService) DeleteImageByName(config web.ConnConfig, poolName, imageName
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
 		return nil
 	}
-	return rbd.RemoveImage(ioctx, poolName)
+	return rbd.RemoveImage(ioctx, imageName)
 }

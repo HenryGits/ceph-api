@@ -323,55 +323,6 @@ paths:
       summary: 快照克隆
       tags:
       - ceph snaphost模块
-  /snap/createSnaphost:
-    post:
-      consumes:
-      - application/json
-      description: 创建快照
-      parameters:
-      - description: 连接配置
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/web.ConnConfig'
-      - description: 池名称
-        in: query
-        name: poolName
-        required: true
-        type: string
-      - description: image名称
-        in: query
-        name: imageName
-        required: true
-        type: string
-      - description: 快照名称
-        in: query
-        name: snapName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 创建快照
-      tags:
-      - ceph snaphost模块
   /snap/protect:
     post:
       consumes:
@@ -565,6 +516,55 @@ paths:
           schema:
             $ref: '#/definitions/web.ResponseBean'
       summary: 获取快照信息
+      tags:
+      - ceph snaphost模块
+  /snap/snaphost/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建快照
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      - description: 快照名称
+        in: query
+        name: snapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 创建快照
       tags:
       - ceph snaphost模块
   /snap/snaphosts:

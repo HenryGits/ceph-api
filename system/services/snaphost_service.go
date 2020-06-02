@@ -15,7 +15,7 @@ type ISnaphostService interface {
 	GetSnaphosts(config web.ConnConfig, poolName, imageName string) ([]rbd.SnapInfo, error)
 
 	// 获取rbd image快照
-	GetSnaphost(config web.ConnConfig, poolName, imageName, snapName string) *rbd.Snapshot
+	GetSnaphost(config web.ConnConfig, poolName, imageName, snapName string) (*rbd.Snapshot, error)
 
 	//创建rbd image快照
 	CreateSnaphost(config web.ConnConfig, poolName, imageName, snapName string) (*rbd.Snapshot, error)
@@ -56,24 +56,34 @@ func (s snaphostService) GetSnaphosts(config web.ConnConfig, poolName, imageName
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
 		return nil, err
 	}
-	snaps, err := rbd.GetImage(ioctx, imageName).GetSnapshotNames()
+	img, err := rbd.OpenImage(ioctx, imageName, "")
+	if err != nil {
+		utils.Log.Error("打开Rbd image:「" + imageName + "」异常: " + err.Error())
+		return nil, errors.New("打开打开Rbd image异常！")
+	}
+	snaps, err := img.GetSnapshotNames()
 	return snaps, err
 }
 
-func (s snaphostService) GetSnaphost(config web.ConnConfig, poolName, imageName, snapName string) *rbd.Snapshot {
+func (s snaphostService) GetSnaphost(config web.ConnConfig, poolName, imageName, snapName string) (*rbd.Snapshot, error) {
 	conn, err := utils.GetConnection(config)
 	if err != nil {
 		utils.Log.Error("获取连接异常: ", err)
-		return nil
+		return nil, err
 	}
 	// connect to the pool
 	ioctx, err := conn.OpenIOContext(poolName)
 	if err != nil {
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
-		return nil
+		return nil, err
 	}
-	snap := rbd.GetImage(ioctx, imageName).GetSnapshot(snapName)
-	return snap
+	img, err := rbd.OpenImage(ioctx, imageName, "")
+	if err != nil {
+		utils.Log.Error("打开Rbd image:「" + imageName + "」异常: " + err.Error())
+		return nil, errors.New("打开打开Rbd image异常！")
+	}
+	snap := img.GetSnapshot(snapName)
+	return snap, err
 }
 
 func (s snaphostService) CreateSnaphost(config web.ConnConfig, poolName, imageName, snapName string) (*rbd.Snapshot, error) {
@@ -88,8 +98,12 @@ func (s snaphostService) CreateSnaphost(config web.ConnConfig, poolName, imageNa
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
 		return nil, err
 	}
-	snap, err := rbd.GetImage(ioctx, imageName).CreateSnapshot(snapName)
-	return snap, err
+	img, err := rbd.OpenImage(ioctx, imageName, "")
+	if err != nil {
+		utils.Log.Error("打开Rbd image:「" + imageName + "」异常: " + err.Error())
+		return nil, errors.New("打开打开Rbd image异常！")
+	}
+	return img.CreateSnapshot(snapName)
 }
 
 func (s snaphostService) DeleteSnaphost(config web.ConnConfig, poolName, imageName, snapName string) error {
@@ -104,7 +118,12 @@ func (s snaphostService) DeleteSnaphost(config web.ConnConfig, poolName, imageNa
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
 		return err
 	}
-	snap := rbd.GetImage(ioctx, imageName).GetSnapshot(snapName)
+	img, err := rbd.OpenImage(ioctx, imageName, "")
+	if err != nil {
+		utils.Log.Error("打开Rbd image:「" + imageName + "」异常: " + err.Error())
+		return errors.New("打开打开Rbd image异常！")
+	}
+	snap := img.GetSnapshot(snapName)
 	if flag, _ := snap.IsProtected(); flag {
 		return errors.New("快照被锁定,无法删除！")
 	}
@@ -123,7 +142,12 @@ func (s snaphostService) ProtectSnaphost(config web.ConnConfig, poolName, imageN
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
 		return err
 	}
-	snap := rbd.GetImage(ioctx, imageName).GetSnapshot(snapName)
+	img, err := rbd.OpenImage(ioctx, imageName, "")
+	if err != nil {
+		utils.Log.Error("打开Rbd image:「" + imageName + "」异常: " + err.Error())
+		return errors.New("打开打开Rbd image异常！")
+	}
+	snap := img.GetSnapshot(snapName)
 	return snap.Protect()
 }
 
@@ -139,7 +163,12 @@ func (s snaphostService) UnProtectSnaphost(config web.ConnConfig, poolName, imag
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
 		return err
 	}
-	snap := rbd.GetImage(ioctx, imageName).GetSnapshot(snapName)
+	img, err := rbd.OpenImage(ioctx, imageName, "")
+	if err != nil {
+		utils.Log.Error("打开Rbd image:「" + imageName + "」异常: " + err.Error())
+		return errors.New("打开打开Rbd image异常！")
+	}
+	snap := img.GetSnapshot(snapName)
 	return snap.Unprotect()
 }
 
@@ -155,8 +184,14 @@ func (s snaphostService) Rollback(config web.ConnConfig, poolName, imageName, sn
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
 		return err
 	}
-	snap := rbd.GetImage(ioctx, imageName).GetSnapshot(snapName)
-	return snap.Rollback()
+	img, err := rbd.OpenImage(ioctx, imageName, "")
+	if err != nil {
+		utils.Log.Error("打开Rbd image:「" + imageName + "」异常: " + err.Error())
+		return errors.New("打开Rbd image异常！")
+	}
+	snap := img.GetSnapshot(snapName)
+	go snap.Rollback()
+	return err
 }
 
 func (s snaphostService) CloneSnaphost(config web.ConnConfig, poolName, oldImageName, newImageName, snapName string) (*rbd.Image, error) {
@@ -171,6 +206,16 @@ func (s snaphostService) CloneSnaphost(config web.ConnConfig, poolName, oldImage
 		utils.Log.Error("打开pool: {}异常: ", poolName, err)
 		return nil, err
 	}
-	image := rbd.GetImage(ioctx, oldImageName)
-	return image.Clone(snapName, ioctx, newImageName, rbd.FeatureLayering, 22)
+	image, err := rbd.OpenImage(ioctx, oldImageName, "")
+	if err != nil {
+		utils.Log.Error("打开Rbd image:「" + oldImageName + "」异常: " + err.Error())
+		return nil, errors.New("打开Rbd image异常！")
+	}
+	snap := image.GetSnapshot(snapName)
+	// 锁定 snapshot
+	if err := snap.Protect(); err != nil {
+		utils.Log.Error("快照锁定失败！", err.Error())
+		return nil, err
+	}
+	return image.Clone(snapName, ioctx, newImageName, rbd.RbdFeatureLayering, 22)
 }

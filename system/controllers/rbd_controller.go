@@ -115,7 +115,7 @@ func (c *RbdController) DeleteImage() *web.ResponseBean {
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
-		result = web.GenSuccessMsg("删除池成功。")
+		result = web.GenSuccessMsg("删除image成功。")
 	}
 	utils.Log.Info("Response: ", result)
 	return result

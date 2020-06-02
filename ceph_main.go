@@ -128,28 +128,28 @@ func main() {
 	}
 
 	//// create snapshot
-	//snapName := "test-snap"
-	//snapshot, err := img.CreateSnapshot(snapName)
-	//if err != nil {
-	//	fmt.Printf("Rbd create snapshot failed: %v", err)
-	//	return
-	//}
-	//
-	//// 锁定 snapshot
-	//if err := snapshot.Protect(); err != nil {
-	//	fmt.Printf("Rbd create snapshot failed: %v", err)
-	//	return
-	//}
-	//
-	//// make a clone image based on the snap shot
-	//_, err = img.Clone(snapName, ioctx, cloneImageName, rbd.RbdFeatureLayering, 22)
-	//if err != nil {
-	//	fmt.Printf("Rbd clone snapshot failed: %v", err)
-	//	return
-	//}
-	//
-	//img.Remove()
-	//
-	//imgs,_ = rbd.GetImageNames(ioctx)
-	//fmt.Println("imgs==>", imgs)
+	snapName := "test-snap"
+	snapshot, err := img.CreateSnapshot(snapName)
+	if err != nil {
+		fmt.Printf("Rbd create snapshot failed: %v", err)
+		return
+	}
+
+	// 锁定 snapshot
+	if err := snapshot.Protect(); err != nil {
+		fmt.Printf("Rbd create snapshot failed: %v", err)
+		return
+	}
+
+	// make a clone image based on the snap shot
+	_, err = img.Clone(snapName, ioctx, cloneImageName, rbd.RbdFeatureLayering, 22)
+	if err != nil {
+		fmt.Printf("Rbd clone snapshot failed: %v", err)
+		return
+	}
+
+	img.Remove()
+
+	imgs, _ = rbd.GetImageNames(ioctx)
+	fmt.Println("imgs==>", imgs)
 }

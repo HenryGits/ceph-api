@@ -36,3 +36,7 @@ func GenNotFondMsg() *ResponseBean {
 func GenFailedMsg(errMsg string) *ResponseBean {
 	return &ResponseBean{ERROR, errMsg, ""}
 }
+
+func GenFailedResult(errMsg string, data interface{}) *ResponseBean {
+	return &ResponseBean{ERROR, errMsg, data}
+}

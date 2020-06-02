@@ -462,79 +462,6 @@ var doc = `{
                 }
             }
         },
-        "/snap/createSnaphost": {
-            "post": {
-                "description": "创建快照",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ceph snaphost模块"
-                ],
-                "summary": "创建快照",
-                "parameters": [
-                    {
-                        "description": "连接配置",
-                        "name": "config",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/web.ConnConfig"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "池名称",
-                        "name": "poolName",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "image名称",
-                        "name": "imageName",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "快照名称",
-                        "name": "snapName",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    }
-                }
-            }
-        },
         "/snap/protect": {
             "post": {
                 "description": "锁定快照",
@@ -765,6 +692,79 @@ var doc = `{
                     "ceph snaphost模块"
                 ],
                 "summary": "删除快照",
+                "parameters": [
+                    {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "池名称",
+                        "name": "poolName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image名称",
+                        "name": "imageName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "快照名称",
+                        "name": "snapName",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    }
+                }
+            }
+        },
+        "/snap/snaphost/create": {
+            "post": {
+                "description": "创建快照",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ceph snaphost模块"
+                ],
+                "summary": "创建快照",
                 "parameters": [
                     {
                         "description": "连接配置",

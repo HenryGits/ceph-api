@@ -80,9 +80,9 @@ func (c *SnaphostController) PostSnaphost() *web.ResponseBean {
 	var poolName = c.Ctx.URLParam("poolName")
 	var imageName = c.Ctx.URLParam("imageName")
 	var snapName = c.Ctx.URLParam("snapName")
-	snap := c.SnaphostService.GetSnaphost(config, poolName, imageName, snapName)
-	if snap == nil {
-		result = web.GenFailedMsg("获取快照信息失败！")
+	snap, err := c.SnaphostService.GetSnaphost(config, poolName, imageName, snapName)
+	if err != nil {
+		result = web.GenFailedMsg(err.Error())
 	} else {
 		result = web.GenSuccessMsg(snap)
 	}
@@ -103,8 +103,8 @@ func (c *SnaphostController) PostSnaphost() *web.ResponseBean {
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /snap/createSnaphost [post]
-func (c *SnaphostController) PostCreateSnaphost() *web.ResponseBean {
+// @Router /snap/snaphost/create [post]
+func (c *SnaphostController) PostSnaphostCreate() *web.ResponseBean {
 	var result *web.ResponseBean
 	//通过context.ReadJSON()读取传过来的数据
 	var config web.ConnConfig
@@ -152,7 +152,7 @@ func (c *SnaphostController) DeleteSnaphost() *web.ResponseBean {
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
-		result = web.GenSuccessMsg("删除池成功。")
+		result = web.GenSuccessMsg("快照删除成功。")
 	}
 	utils.Log.Info("Response: ", result)
 	return result
@@ -220,7 +220,7 @@ func (c *SnaphostController) PostUnprotect() *web.ResponseBean {
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
-		result = web.GenSuccessMsg("快照解锁成功。")
+		result = web.GenSuccess("快照解锁成功。")
 	}
 	utils.Log.Info("Response: ", result)
 	return result
