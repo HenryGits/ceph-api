@@ -18,10 +18,13 @@ definitions:
   web.ResponseBean:
     properties:
       code:
+        format: 返回码
         type: integer
       data:
+        format: 结果数据
         type: object
       msg:
+        format: 处理结果
         type: string
     type: object
 host: localhost:8080
@@ -32,6 +35,39 @@ info:
   title: Ceph Rest Api
   version: "1.0"
 paths:
+  /admin/auth:
+    post:
+      consumes:
+      - application/json
+      description: get admin info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      security:
+      - ApiKeyAuth: []
+      summary: Auth admin
+      tags:
+      - admin
   /pool/pool:
     delete:
       consumes:
@@ -660,4 +696,9 @@ paths:
       summary: 解锁快照
       tags:
       - ceph snaphost模块
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -47,17 +47,19 @@ func main() {
 	})
 
 	// "/pool" based mvc application.
-	pool := mvc.New(app.Party("/api/pool"))
+	pool := mvc.New(app.Party("/api/pool", j.Serve, myAuthenticatedHandler))
 	rbd := mvc.New(app.Party("/api/rbd"))
 	snap := mvc.New(app.Party("/api/snap"))
+	admin := mvc.New(app.Party("/api/admin"))
 	pool.Register(services.NewPoolService())
 	pool.Handle(new(controllers.PoolController))
 	rbd.Register(services.NewRbdService())
 	rbd.Handle(new(controllers.RbdController))
 	snap.Register(services.NewSnaphostService())
 	snap.Handle(new(controllers.SnaphostController))
+	admin.Handle(new(controllers.AdminController))
 
-	app.Get("/api/admin/auth", j.Serve, myAuthenticatedHandler)
+	app.Get("/api/admin/login", j.Serve, myAuthenticatedHandler)
 	//The url pointing to API definition
 	config := &swagger.Config{
 		URL: "http://localhost:8080/swagger/doc.json",

@@ -20,10 +20,9 @@ type AdminController struct {
 	Session *sessions.Session
 }
 
-// Auth godoc
 // @Summary Auth admin
 // @Description get admin info
-// @Tags accounts,admin
+// @Tags admin
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} web.ResponseBean
