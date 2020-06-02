@@ -27,11 +27,6 @@ var doc = `{
     "paths": {
         "/admin/auth": {
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "get admin info",
                 "consumes": [
                     "application/json"
@@ -1061,6 +1056,9 @@ var doc = `{
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
+        },
+        "BasicAuth": {
+            "type": "basic"
         }
     }
 }`

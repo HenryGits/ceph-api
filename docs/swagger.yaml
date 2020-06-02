@@ -63,8 +63,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/web.ResponseBean'
-      security:
-      - ApiKeyAuth: []
       summary: Auth admin
       tags:
       - admin
@@ -701,4 +699,6 @@ securityDefinitions:
     in: header
     name: Authorization
     type: apiKey
+  BasicAuth:
+    type: basic
 swagger: "2.0"

@@ -30,17 +30,18 @@ type AdminController struct {
 // @Failure 401 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Security ApiKeyAuth
 // @Router /admin/auth [post]
-func (c *AdminController) Auth() *web.ResponseBean {
-	phone := c.Ctx.FormValue("phone")
-	password := c.Ctx.FormValue("password")
-
+// "Bearer "
+func (c *AdminController) PostAuth() *web.ResponseBean {
 	/* 这里省去了对用户的验证，在实际使用过程中需要验证用户是否存在，密码是否正确 */
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"phone":    phone,
-		"password": password,
-		"exp":      time.Now().Add(time.Hour * 2).Unix(), // 添加过期时间为2个小时
+		"nick_name": "iris",
+		"email":     "go-iris@qq.com",
+		"id":        "1",
+		"iss":       "Iris",
+		"iat":       time.Now().Unix(),
+		"jti":       "9527",
+		"exp":       time.Now().Add(time.Hour * 2).Unix(), // 添加过期时间为2个小时
 	})
 
 	// 这里的密钥和前面的必须一样

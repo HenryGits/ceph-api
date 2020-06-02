@@ -4,7 +4,8 @@ import (
 	_ "github.com/ceph/go-ceph/docs"
 	"github.com/ceph/go-ceph/system/controllers"
 	"github.com/ceph/go-ceph/system/services"
-	"github.com/iris-contrib/middleware/jwt"
+	"github.com/dgrijalva/jwt-go"
+	jwtmiddleware "github.com/iris-contrib/middleware/jwt"
 	"github.com/iris-contrib/swagger/v12"
 	"github.com/iris-contrib/swagger/v12/swaggerFiles"
 	"github.com/kataras/iris/v12"
@@ -17,6 +18,7 @@ import (
 // @host localhost:8080
 // @BasePath /api
 
+// @securityDefinitions.basic BasicAuth
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
@@ -27,27 +29,27 @@ func main() {
 	app.Logger().SetLevel("debug")
 
 	//jwt中间件
-	j := jwt.New(jwt.Config{
+	jwtHandler := jwtmiddleware.New(jwtmiddleware.Config{
+		//这个方法将验证jwt的token
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			return "My Secret", nil
+			//自己加密的秘钥或者说盐值
+			return []byte("My Secret"), nil
 		},
-
-		// Extract by the "token" url.
-		// There are plenty of options.
-		// The default jwt's behavior to extract a token value is by
-		// the `Authorization: Bearer $TOKEN` header.
-		Extractor: jwt.FromParameter("token"),
-		// When set, the middleware verifies that tokens are
-		// signed with the specific signing algorithm
-		// If the signing method is not constant the `jwt.Config.ValidationKeyGetter` callback
-		// can be used to implement additional checks
-		// Important to avoid security issues described here:
-		// https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/
+		//设置后，中间件会验证令牌是否使用特定的签名算法进行签名
+		//如果签名方法不是常量，则可以使用ValidationKeyGetter回调来实现其他检查
+		//重要的是要避免此处的安全问题：https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/
+		//加密的方式
 		SigningMethod: jwt.SigningMethodHS256,
+		//验证未通过错误处理方式
+		//ErrorHandler: func(context.Context, string)
+
+		//debug 模式
+		//Debug: bool
 	})
+	//app.Use(jwtHandler.Serve)
 
 	// "/pool" based mvc application.
-	pool := mvc.New(app.Party("/api/pool", j.Serve, myAuthenticatedHandler))
+	pool := mvc.New(app.Party("/api/pool"))
 	rbd := mvc.New(app.Party("/api/rbd"))
 	snap := mvc.New(app.Party("/api/snap"))
 	admin := mvc.New(app.Party("/api/admin"))
@@ -59,7 +61,7 @@ func main() {
 	snap.Handle(new(controllers.SnaphostController))
 	admin.Handle(new(controllers.AdminController))
 
-	app.Get("/api/admin/login", j.Serve, myAuthenticatedHandler)
+	app.Get("/api/admin/login", jwtHandler.Serve, myAuthenticatedHandler)
 	//The url pointing to API definition
 	config := &swagger.Config{
 		URL: "http://localhost:8080/swagger/doc.json",
