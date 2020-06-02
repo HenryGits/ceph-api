@@ -10,7 +10,7 @@ import (
 /**
  * 日志模块
  */
-var log = iris.New().Logger()
+var Log = iris.New().Logger()
 
 const (
 	DefaultRadosConfigFile = "/etc/ceph/ceph.conf"
@@ -27,27 +27,27 @@ func GetConnection(config web.ConnConfig) (*rados.Conn, error) {
 		//connect to the cluster
 		conn, _ := rados.NewConn()
 		if err := conn.ReadConfigFile(DefaultRadosConfigFile); err != nil {
-			log.Warn("文件/etc/ceph/ceph.conf不存在！", err)
+			Log.Warn("文件/etc/ceph/ceph.conf不存在！", err)
 		}
 		if err := conn.Connect(); err != nil {
-			log.Warn("通过配置文件建立ceph连接失败！", err)
+			Log.Warn("通过配置文件建立ceph连接失败！", err)
 		}
 	}
 	// 通过用户传递的参数，创建ceph连接
 	conn, err := rados.NewConnWithUser(config.User)
 	if err != nil {
-		log.Error("建立ceph连接失败！", err)
+		Log.Error("建立ceph连接失败！", err)
 		return nil, nil
 	}
 	args := []string{"--client_mount_timeout", "15", "-m", config.Monitors, "--key", config.Key}
 	err = conn.ParseCmdLineArgs(args)
 	if err != nil {
-		log.Error("解析参数失败！", err)
+		Log.Error("解析参数失败！", err)
 		return nil, nil
 	}
 	err = conn.Connect()
 	if err != nil {
-		log.Error("通过传递参数建立ceph连接失败！", err)
+		Log.Error("通过传递参数建立ceph连接失败！", err)
 		return nil, nil
 	}
 	return conn, nil

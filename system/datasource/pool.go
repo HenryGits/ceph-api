@@ -1,5 +1,3 @@
-// file: datasource/pool.go
-
 package datasource
 
 import (

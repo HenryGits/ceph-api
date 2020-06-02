@@ -2,11 +2,17 @@ basePath: /api
 definitions:
   web.ConnConfig:
     properties:
-      key:
+      id:
+        example: 192.168.113.215:6789,192.168.113.216:6789,192.168.113.217:6789
+        format: Ceph Mgr ipaddr
         type: string
-      monitors:
+      key:
+        example: AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA==
+        format: Mgr 密钥Key
         type: string
       user:
+        example: admin
+        format: 用户名
         type: string
     type: object
   web.ResponseBean:
@@ -26,14 +32,20 @@ info:
   title: Ceph Rest Api
   version: "1.0"
 paths:
-  /pool/{poolName}:
+  /pool/pool:
     delete:
       consumes:
       - application/json
       description: 删除池
       parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
       - description: 池名称
-        in: path
+        in: query
         name: poolName
         required: true
         type: string
@@ -59,51 +71,19 @@ paths:
       summary: 删除池
       tags:
       - ceph池模块
-    get:
+    post:
       consumes:
       - application/json
-      description: 通过名称获取对应池信息
+      description: 创建池
       parameters:
-      - description: 池名称
-        in: path
-        name: poolName
-        required: true
-        type: string
       - description: 连接配置
         in: body
         name: config
         required: true
         schema:
           $ref: '#/definitions/web.ConnConfig'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 通过名称获取对应池信息
-      tags:
-      - ceph池模块
-    post:
-      consumes:
-      - application/json
-      description: 创建池
-      parameters:
       - description: 池名称
-        in: path
+        in: query
         name: poolName
         required: true
         type: string
@@ -130,7 +110,7 @@ paths:
       tags:
       - ceph池模块
   /pool/pools:
-    get:
+    post:
       consumes:
       - application/json
       description: 获取到所有的pool
@@ -163,151 +143,6 @@ paths:
       summary: 获取到所有的pool
       tags:
       - ceph池模块
-  /rbd/{poolName}/{imageName}/{snapName}:
-    delete:
-      consumes:
-      - application/json
-      description: 删除快照
-      parameters:
-      - description: 连接配置
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/web.ConnConfig'
-      - description: 池名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: image名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: 快照名称
-        in: path
-        name: snapName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 删除快照
-      tags:
-      - ceph snaphost模块
-    get:
-      consumes:
-      - application/json
-      description: 获取快照信息
-      parameters:
-      - description: 连接配置
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/web.ConnConfig'
-      - description: 池名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: image名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: 快照名称
-        in: path
-        name: snapName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 获取快照信息
-      tags:
-      - ceph snaphost模块
-    post:
-      consumes:
-      - application/json
-      description: 创建快照
-      parameters:
-      - description: 连接配置
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/web.ConnConfig'
-      - description: 池名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: image名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: 快照名称
-        in: path
-        name: snapName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 创建快照
-      tags:
-      - ceph snaphost模块
   /rbd/image:
     delete:
       consumes:
@@ -395,50 +230,6 @@ paths:
       summary: 创建image
       tags:
       - ceph rbd模块
-  /rbd/image/{poolName}/{imageName}:
-    get:
-      consumes:
-      - application/json
-      description: 获取image信息
-      parameters:
-      - description: 连接配置
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/web.ConnConfig'
-      - description: 池名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: image名称
-        in: path
-        name: imageName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 获取image信息
-      tags:
-      - ceph rbd模块
   /rbd/images:
     post:
       consumes:
@@ -478,8 +269,306 @@ paths:
       summary: 获取到所有的image
       tags:
       - ceph rbd模块
-  /snap/{poolName}/{imageName}/Snaphosts:
-    get:
+  /snap/clone:
+    post:
+      consumes:
+      - application/json
+      description: 快照克隆
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: oldImageName
+        required: true
+        type: string
+      - description: 新的image名称
+        in: query
+        name: newImageName
+        required: true
+        type: string
+      - description: 快照名称
+        in: query
+        name: snapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 快照克隆
+      tags:
+      - ceph snaphost模块
+  /snap/createSnaphost:
+    post:
+      consumes:
+      - application/json
+      description: 创建快照
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      - description: 快照名称
+        in: query
+        name: snapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 创建快照
+      tags:
+      - ceph snaphost模块
+  /snap/protect:
+    post:
+      consumes:
+      - application/json
+      description: 锁定快照
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      - description: 快照名称
+        in: query
+        name: snapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 锁定快照
+      tags:
+      - ceph snaphost模块
+  /snap/rollback:
+    post:
+      consumes:
+      - application/json
+      description: 快照回滚
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      - description: 快照名称
+        in: query
+        name: snapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 快照回滚
+      tags:
+      - ceph snaphost模块
+  /snap/snaphost:
+    delete:
+      consumes:
+      - application/json
+      description: 删除快照
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      - description: 快照名称
+        in: query
+        name: snapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 删除快照
+      tags:
+      - ceph snaphost模块
+    post:
+      consumes:
+      - application/json
+      description: 获取快照信息
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      - description: 快照名称
+        in: query
+        name: snapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 获取快照信息
+      tags:
+      - ceph snaphost模块
+  /snap/snaphosts:
+    post:
       consumes:
       - application/json
       description: 获取到所有的快照
@@ -491,8 +580,13 @@ paths:
         schema:
           $ref: '#/definitions/web.ConnConfig'
       - description: 池名称
-        in: path
+        in: query
         name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
         required: true
         type: string
       produces:
@@ -515,6 +609,55 @@ paths:
           schema:
             $ref: '#/definitions/web.ResponseBean'
       summary: 获取到所有的快照
+      tags:
+      - ceph snaphost模块
+  /snap/unProtect:
+    post:
+      consumes:
+      - application/json
+      description: 解锁快照
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      - description: 快照名称
+        in: query
+        name: snapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 解锁快照
       tags:
       - ceph snaphost模块
 swagger: "2.0"

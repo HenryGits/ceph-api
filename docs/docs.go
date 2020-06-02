@@ -25,116 +25,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/pool/pools": {
-            "get": {
-                "description": "获取到所有的pool",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ceph池模块"
-                ],
-                "summary": "获取到所有的pool",
-                "parameters": [
-                    {
-                        "description": "连接配置",
-                        "name": "config",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/web.ConnConfig"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    }
-                }
-            }
-        },
-        "/pool/{poolName}": {
-            "get": {
-                "description": "通过名称获取对应池信息",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ceph池模块"
-                ],
-                "summary": "通过名称获取对应池信息",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "池名称",
-                        "name": "poolName",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "连接配置",
-                        "name": "config",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/web.ConnConfig"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    }
-                }
-            },
+        "/pool/pool": {
             "post": {
                 "description": "创建池",
                 "consumes": [
@@ -149,10 +40,19 @@ var doc = `{
                 "summary": "创建池",
                 "parameters": [
                     {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
+                    },
+                    {
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -197,11 +97,72 @@ var doc = `{
                 "summary": "删除池",
                 "parameters": [
                     {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
+                    },
+                    {
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    }
+                }
+            }
+        },
+        "/pool/pools": {
+            "post": {
+                "description": "获取到所有的pool",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ceph池模块"
+                ],
+                "summary": "获取到所有的pool",
+                "parameters": [
+                    {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
                     }
                 ],
                 "responses": {
@@ -362,72 +323,6 @@ var doc = `{
                 }
             }
         },
-        "/rbd/image/{poolName}/{imageName}": {
-            "get": {
-                "description": "获取image信息",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ceph rbd模块"
-                ],
-                "summary": "获取image信息",
-                "parameters": [
-                    {
-                        "description": "连接配置",
-                        "name": "config",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/web.ConnConfig"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "池名称",
-                        "name": "poolName",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "image名称",
-                        "name": "imageName",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    }
-                }
-            }
-        },
         "/rbd/images": {
             "post": {
                 "description": "获取到所有的image",
@@ -487,9 +382,9 @@ var doc = `{
                 }
             }
         },
-        "/rbd/{poolName}/{imageName}/{snapName}": {
-            "get": {
-                "description": "获取快照信息",
+        "/snap/clone": {
+            "post": {
+                "description": "快照克隆",
                 "consumes": [
                     "application/json"
                 ],
@@ -499,7 +394,7 @@ var doc = `{
                 "tags": [
                     "ceph snaphost模块"
                 ],
-                "summary": "获取快照信息",
+                "summary": "快照克隆",
                 "parameters": [
                     {
                         "description": "连接配置",
@@ -514,21 +409,28 @@ var doc = `{
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "image名称",
-                        "name": "poolName",
-                        "in": "path",
+                        "name": "oldImageName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "新的image名称",
+                        "name": "newImageName",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "快照名称",
                         "name": "snapName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -558,7 +460,9 @@ var doc = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/snap/createSnaphost": {
             "post": {
                 "description": "创建快照",
                 "consumes": [
@@ -585,21 +489,240 @@ var doc = `{
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "image名称",
-                        "name": "poolName",
-                        "in": "path",
+                        "name": "imageName",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "快照名称",
                         "name": "snapName",
-                        "in": "path",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    }
+                }
+            }
+        },
+        "/snap/protect": {
+            "post": {
+                "description": "锁定快照",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ceph snaphost模块"
+                ],
+                "summary": "锁定快照",
+                "parameters": [
+                    {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "池名称",
+                        "name": "poolName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image名称",
+                        "name": "imageName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "快照名称",
+                        "name": "snapName",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    }
+                }
+            }
+        },
+        "/snap/rollback": {
+            "post": {
+                "description": "快照回滚",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ceph snaphost模块"
+                ],
+                "summary": "快照回滚",
+                "parameters": [
+                    {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "池名称",
+                        "name": "poolName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image名称",
+                        "name": "imageName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "快照名称",
+                        "name": "snapName",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    }
+                }
+            }
+        },
+        "/snap/snaphost": {
+            "post": {
+                "description": "获取快照信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ceph snaphost模块"
+                ],
+                "summary": "获取快照信息",
+                "parameters": [
+                    {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "池名称",
+                        "name": "poolName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image名称",
+                        "name": "imageName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "快照名称",
+                        "name": "snapName",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -656,21 +779,21 @@ var doc = `{
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "image名称",
-                        "name": "poolName",
-                        "in": "path",
+                        "name": "imageName",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "快照名称",
                         "name": "snapName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -702,8 +825,8 @@ var doc = `{
                 }
             }
         },
-        "/snap/{poolName}/{imageName}/Snaphosts": {
-            "get": {
+        "/snap/snaphosts": {
+            "post": {
                 "description": "获取到所有的快照",
                 "consumes": [
                     "application/json"
@@ -729,7 +852,87 @@ var doc = `{
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
-                        "in": "path",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image名称",
+                        "name": "imageName",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    }
+                }
+            }
+        },
+        "/snap/unProtect": {
+            "post": {
+                "description": "解锁快照",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ceph snaphost模块"
+                ],
+                "summary": "解锁快照",
+                "parameters": [
+                    {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "池名称",
+                        "name": "poolName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image名称",
+                        "name": "imageName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "快照名称",
+                        "name": "snapName",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -766,14 +969,20 @@ var doc = `{
         "web.ConnConfig": {
             "type": "object",
             "properties": {
-                "key": {
-                    "type": "string"
+                "id": {
+                    "type": "string",
+                    "format": "Ceph Mgr ipaddr",
+                    "example": "192.168.113.215:6789,192.168.113.216:6789,192.168.113.217:6789"
                 },
-                "monitors": {
-                    "type": "string"
+                "key": {
+                    "type": "string",
+                    "format": "Mgr 密钥Key",
+                    "example": "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA=="
                 },
                 "user": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "用户名",
+                    "example": "admin"
                 }
             }
         },

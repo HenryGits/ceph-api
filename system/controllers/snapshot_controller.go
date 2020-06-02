@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/ceph/go-ceph/system/services"
+	"github.com/ceph/go-ceph/system/utils"
 	"github.com/ceph/go-ceph/system/web"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
@@ -23,32 +24,35 @@ type SnaphostController struct {
 	Session *sessions.Session
 }
 
-/**
- * 日志模块
- */
-var snapLog = iris.New().Logger()
-
 // @tags ceph snaphost模块
 // @Summary 获取到所有的快照
 // @Description 获取到所有的快照
 // @Accept  application/json
 // @Produce  application/json
 // @Param config body web.ConnConfig true "连接配置"
-// @Param poolName path string true "池名称"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
 // @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /snap/{poolName}/{imageName}/Snaphosts [get]
-func (c *SnaphostController) GetSnaphosts(config web.ConnConfig, poolName, imageName string) *web.ResponseBean {
+// @Router /snap/snaphosts [post]
+func (c *SnaphostController) PostSnaphosts() *web.ResponseBean {
 	var result *web.ResponseBean
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		utils.Log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
 	images, err := c.SnaphostService.GetSnaphosts(config, poolName, imageName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
 		result = web.GenSuccessMsg(images)
 	}
-	log.Info("Response: ", result)
+	utils.Log.Info("Response: ", result)
 	return result
 }
 
@@ -58,23 +62,31 @@ func (c *SnaphostController) GetSnaphosts(config web.ConnConfig, poolName, image
 // @Accept  application/json
 // @Produce  application/json
 // @Param config body web.ConnConfig true "连接配置"
-// @Param poolName path string true "池名称"
-// @Param poolName path string true "image名称"
-// @Param snapName path string true "快照名称"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
+// @Param snapName query string true "快照名称"
 // @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /rbd/{poolName}/{imageName}/{snapName} [get]
-func (c *SnaphostController) GetSnaphost(config web.ConnConfig, poolName, imageName, snapName string) *web.ResponseBean {
+// @Router /snap/snaphost [post]
+func (c *SnaphostController) PostSnaphost() *web.ResponseBean {
 	var result *web.ResponseBean
-	pools, err := c.SnaphostService.GetSnaphost(config, poolName, imageName, snapName)
-	if err != nil {
-		result = web.GenFailedMsg(err.Error())
-	} else {
-		result = web.GenSuccessMsg(pools)
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		utils.Log.Error(err)
 	}
-	log.Info("Response: ", result)
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
+	var snapName = c.Ctx.URLParam("snapName")
+	snap := c.SnaphostService.GetSnaphost(config, poolName, imageName, snapName)
+	if snap == nil {
+		result = web.GenFailedMsg("获取快照信息失败！")
+	} else {
+		result = web.GenSuccessMsg(snap)
+	}
+	utils.Log.Info("Response: ", result)
 	return result
 }
 
@@ -84,23 +96,31 @@ func (c *SnaphostController) GetSnaphost(config web.ConnConfig, poolName, imageN
 // @Accept  application/json
 // @Produce  application/json
 // @Param config body web.ConnConfig true "连接配置"
-// @Param poolName path string true "池名称"
-// @Param poolName path string true "image名称"
-// @Param snapName path string true "快照名称"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
+// @Param snapName query string true "快照名称"
 // @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /rbd/{poolName}/{imageName}/{snapName} [post]
-func (c *SnaphostController) CreateSnaphost(config web.ConnConfig, poolName, imageName, snapName string) *web.ResponseBean {
+// @Router /snap/createSnaphost [post]
+func (c *SnaphostController) PostCreateSnaphost() *web.ResponseBean {
 	var result *web.ResponseBean
-	err := c.SnaphostService.CreateSnaphost(config, poolName, imageName, snapName)
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		utils.Log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
+	var snapName = c.Ctx.URLParam("snapName")
+	snap, err := c.SnaphostService.CreateSnaphost(config, poolName, imageName, snapName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
-		result = web.GenSuccess("池创建成功。")
+		result = web.GenSuccessMsg(snap)
 	}
-	log.Info("Response: ", result)
+	utils.Log.Info("Response: ", result)
 	return result
 }
 
@@ -110,22 +130,168 @@ func (c *SnaphostController) CreateSnaphost(config web.ConnConfig, poolName, ima
 // @Accept  application/json
 // @Produce  application/json
 // @Param config body web.ConnConfig true "连接配置"
-// @Param poolName path string true "池名称"
-// @Param poolName path string true "image名称"
-// @Param snapName path string true "快照名称"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
+// @Param snapName query string true "快照名称"
 // @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /rbd/{poolName}/{imageName}/{snapName} [delete]
-func (c *SnaphostController) DeleteSnaphost(config web.ConnConfig, poolName, imageName, snapName string) *web.ResponseBean {
+// @Router /snap/snaphost [delete]
+func (c *SnaphostController) DeleteSnaphost() *web.ResponseBean {
 	var result *web.ResponseBean
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		utils.Log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
+	var snapName = c.Ctx.URLParam("snapName")
 	err := c.SnaphostService.DeleteSnaphost(config, poolName, imageName, snapName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
 		result = web.GenSuccessMsg("删除池成功。")
 	}
-	log.Info("Response: ", result)
+	utils.Log.Info("Response: ", result)
+	return result
+}
+
+// @tags ceph snaphost模块
+// @Summary 锁定快照
+// @Description 锁定快照
+// @Accept  application/json
+// @Produce  application/json
+// @Param config body web.ConnConfig true "连接配置"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
+// @Param snapName query string true "快照名称"
+// @Success 200 {object} web.ResponseBean
+// @Failure 400 {object} web.ResponseBean
+// @Failure 404 {object} web.ResponseBean
+// @Failure 500 {object} web.ResponseBean
+// @Router /snap/protect [post]
+func (c *SnaphostController) PostProtect() *web.ResponseBean {
+	var result *web.ResponseBean
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		utils.Log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
+	var snapName = c.Ctx.URLParam("snapName")
+	err := c.SnaphostService.ProtectSnaphost(config, poolName, imageName, snapName)
+	if err != nil {
+		result = web.GenFailedMsg(err.Error())
+	} else {
+		result = web.GenSuccessMsg("快照锁定成功。")
+	}
+	utils.Log.Info("Response: ", result)
+	return result
+}
+
+// @tags ceph snaphost模块
+// @Summary 解锁快照
+// @Description 解锁快照
+// @Accept  application/json
+// @Produce  application/json
+// @Param config body web.ConnConfig true "连接配置"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
+// @Param snapName query string true "快照名称"
+// @Success 200 {object} web.ResponseBean
+// @Failure 400 {object} web.ResponseBean
+// @Failure 404 {object} web.ResponseBean
+// @Failure 500 {object} web.ResponseBean
+// @Router /snap/unProtect [post]
+func (c *SnaphostController) PostUnProtect() *web.ResponseBean {
+	var result *web.ResponseBean
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		utils.Log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
+	var snapName = c.Ctx.URLParam("snapName")
+	err := c.SnaphostService.UnProtectSnaphost(config, poolName, imageName, snapName)
+	if err != nil {
+		result = web.GenFailedMsg(err.Error())
+	} else {
+		result = web.GenSuccessMsg("快照解锁成功。")
+	}
+	utils.Log.Info("Response: ", result)
+	return result
+}
+
+// @tags ceph snaphost模块
+// @Summary 快照回滚
+// @Description 快照回滚
+// @Accept  application/json
+// @Produce  application/json
+// @Param config body web.ConnConfig true "连接配置"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
+// @Param snapName query string true "快照名称"
+// @Success 200 {object} web.ResponseBean
+// @Failure 400 {object} web.ResponseBean
+// @Failure 404 {object} web.ResponseBean
+// @Failure 500 {object} web.ResponseBean
+// @Router /snap/rollback [post]
+func (c *SnaphostController) PostRollback() *web.ResponseBean {
+	var result *web.ResponseBean
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		utils.Log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
+	var snapName = c.Ctx.URLParam("snapName")
+	err := c.SnaphostService.Rollback(config, poolName, imageName, snapName)
+	if err != nil {
+		result = web.GenFailedMsg(err.Error())
+	} else {
+		result = web.GenSuccessMsg("快照回滚成功。")
+	}
+	utils.Log.Info("Response: ", result)
+	return result
+}
+
+// @tags ceph snaphost模块
+// @Summary 快照克隆
+// @Description 快照克隆
+// @Accept  application/json
+// @Produce  application/json
+// @Param config body web.ConnConfig true "连接配置"
+// @Param poolName query string true "池名称"
+// @Param oldImageName query string true "image名称"
+// @Param newImageName query string true "新的image名称"
+// @Param snapName query string true "快照名称"
+// @Success 200 {object} web.ResponseBean
+// @Failure 400 {object} web.ResponseBean
+// @Failure 404 {object} web.ResponseBean
+// @Failure 500 {object} web.ResponseBean
+// @Router /snap/clone [post]
+func (c *SnaphostController) PostClone() *web.ResponseBean {
+	var result *web.ResponseBean
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		utils.Log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var oldImageName = c.Ctx.URLParam("oldImageName")
+	var newImageName = c.Ctx.URLParam("newImageName")
+	var snapName = c.Ctx.URLParam("snapName")
+	image, err := c.SnaphostService.CloneSnaphost(config, poolName, oldImageName, newImageName, snapName)
+	if err != nil {
+		result = web.GenFailedMsg(err.Error())
+	} else {
+		result = web.GenSuccessMsg(image)
+	}
+	utils.Log.Info("Response: ", result)
 	return result
 }

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/ceph/go-ceph/system/services"
+	"github.com/ceph/go-ceph/system/utils"
 	"github.com/ceph/go-ceph/system/web"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/sessions"
@@ -23,11 +24,6 @@ type RbdController struct {
 	Session *sessions.Session
 }
 
-/**
- * 日志模块
- */
-var rbdLog = iris.New().Logger()
-
 // @tags ceph rbd模块
 // @Summary 获取到所有的image
 // @Description 获取到所有的image
@@ -44,20 +40,20 @@ func (c *RbdController) PostImages() *web.ResponseBean {
 	//通过context.ReadJSON()读取传过来的数据
 	var config web.ConnConfig
 	if err := c.Ctx.ReadJSON(&config); err != nil {
-		log.Error(err)
+		utils.Log.Error(err)
 	}
 	var poolName = c.Ctx.URLParam("poolName")
-	log.Info(config)
-	log.Info(poolName)
+	utils.Log.Info(config)
+	utils.Log.Info(poolName)
 
 	var result *web.ResponseBean
-	images, err := c.RbdService.GetImages(config)
+	images, err := c.RbdService.GetImages(config, poolName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
 		result = web.GenSuccessMsg(images)
 	}
-	log.Info("Response: ", result)
+	utils.Log.Info("Response: ", result)
 	return result
 }
 
@@ -79,17 +75,17 @@ func (c *RbdController) PostImage() *web.ResponseBean {
 	//通过context.ReadJSON()读取传过来的数据
 	var config web.ConnConfig
 	if err := c.Ctx.ReadJSON(&config); err != nil {
-		log.Error(err)
+		utils.Log.Error(err)
 	}
 	var poolName = c.Ctx.URLParam("poolName")
 	var imageName = c.Ctx.URLParam("imageName")
-	err := c.RbdService.CreateRbdImage(poolName, imageName)
+	image, err := c.RbdService.CreateRbdImage(config, poolName, imageName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
-		result = web.GenSuccess("池创建成功。")
+		result = web.GenSuccessMsg(image)
 	}
-	log.Info("Response: ", result)
+	utils.Log.Info("Response: ", result)
 	return result
 }
 
@@ -111,16 +107,16 @@ func (c *RbdController) DeleteImage() *web.ResponseBean {
 	//通过context.ReadJSON()读取传过来的数据
 	var config web.ConnConfig
 	if err := c.Ctx.ReadJSON(&config); err != nil {
-		log.Error(err)
+		utils.Log.Error(err)
 	}
 	var poolName = c.Ctx.URLParam("poolName")
 	var imageName = c.Ctx.URLParam("imageName")
-	err := c.RbdService.DeleteImageByName(poolName, imageName)
+	err := c.RbdService.DeleteImageByName(config, poolName, imageName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
 		result = web.GenSuccessMsg("删除池成功。")
 	}
-	log.Info("Response: ", result)
+	utils.Log.Info("Response: ", result)
 	return result
 }
