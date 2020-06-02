@@ -5,10 +5,10 @@ import (
 	"github.com/ceph/go-ceph/system/controllers"
 	"github.com/ceph/go-ceph/system/services"
 	"github.com/iris-contrib/middleware/jwt"
+	"github.com/iris-contrib/swagger"
 	"github.com/iris-contrib/swagger/swaggerFiles"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // @title Ceph Rest Api
@@ -59,13 +59,11 @@ func main() {
 
 	app.Get("/api/admin/auth", j.Serve, myAuthenticatedHandler)
 	//The url pointing to API definition
-	//config := &swagger.Config{
-	//	URL: "http://localhost:8080/swagger/doc.json",
-	//}
-	//// use swagger middleware to
-	//app.Get("/swagger/{any:path}", swagger.CustomWrapHandler(config, swaggerFiles.Handler))
-	app.Get("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
+	config := &swagger.Config{
+		URL: "http://localhost:8080/swagger/doc.json",
+	}
+	// use swagger middleware to
+	app.Get("/swagger/{any:path}", swagger.CustomWrapHandler(config, swaggerFiles.Handler))
 	app.Run(
 		// Starts the web server at localhost:8080
 		iris.Addr("localhost:8080"),
