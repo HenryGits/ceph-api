@@ -232,9 +232,9 @@ var doc = `{
                 }
             }
         },
-        "/rbd/images": {
+        "/rbd/image": {
             "post": {
-                "description": "获取到所有的image",
+                "description": "创建image",
                 "consumes": [
                     "application/json"
                 ],
@@ -244,7 +244,7 @@ var doc = `{
                 "tags": [
                     "ceph rbd模块"
                 ],
-                "summary": "获取到所有的image",
+                "summary": "创建image",
                 "parameters": [
                     {
                         "description": "连接配置",
@@ -259,6 +259,77 @@ var doc = `{
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image名称",
+                        "name": "imageName",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/web.ResponseBean"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除image",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ceph rbd模块"
+                ],
+                "summary": "删除image",
+                "parameters": [
+                    {
+                        "description": "连接配置",
+                        "name": "config",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/web.ConnConfig"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "池名称",
+                        "name": "poolName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image名称",
+                        "name": "imageName",
                         "in": "query",
                         "required": true
                     }
@@ -291,7 +362,7 @@ var doc = `{
                 }
             }
         },
-        "/rbd/{poolName}/{imageName}": {
+        "/rbd/image/{poolName}/{imageName}": {
             "get": {
                 "description": "获取image信息",
                 "consumes": [
@@ -324,7 +395,7 @@ var doc = `{
                     {
                         "type": "string",
                         "description": "image名称",
-                        "name": "poolName",
+                        "name": "imageName",
                         "in": "path",
                         "required": true
                     }
@@ -355,9 +426,11 @@ var doc = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/rbd/images": {
             "post": {
-                "description": "创建image",
+                "description": "获取到所有的image",
                 "consumes": [
                     "application/json"
                 ],
@@ -367,7 +440,7 @@ var doc = `{
                 "tags": [
                     "ceph rbd模块"
                 ],
-                "summary": "创建image",
+                "summary": "获取到所有的image",
                 "parameters": [
                     {
                         "description": "连接配置",
@@ -382,78 +455,7 @@ var doc = `{
                         "type": "string",
                         "description": "池名称",
                         "name": "poolName",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "image名称",
-                        "name": "poolName",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/web.ResponseBean"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "删除池",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "ceph rbd模块"
-                ],
-                "summary": "删除池",
-                "parameters": [
-                    {
-                        "description": "连接配置",
-                        "name": "config",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/web.ConnConfig"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "池名称",
-                        "name": "poolName",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "image名称",
-                        "name": "poolName",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],

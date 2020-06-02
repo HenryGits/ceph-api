@@ -163,136 +163,6 @@ paths:
       summary: 获取到所有的pool
       tags:
       - ceph池模块
-  /rbd/{poolName}/{imageName}:
-    delete:
-      consumes:
-      - application/json
-      description: 删除池
-      parameters:
-      - description: 连接配置
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/web.ConnConfig'
-      - description: 池名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: image名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 删除池
-      tags:
-      - ceph rbd模块
-    get:
-      consumes:
-      - application/json
-      description: 获取image信息
-      parameters:
-      - description: 连接配置
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/web.ConnConfig'
-      - description: 池名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: image名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 获取image信息
-      tags:
-      - ceph rbd模块
-    post:
-      consumes:
-      - application/json
-      description: 创建image
-      parameters:
-      - description: 连接配置
-        in: body
-        name: config
-        required: true
-        schema:
-          $ref: '#/definitions/web.ConnConfig'
-      - description: 池名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      - description: image名称
-        in: path
-        name: poolName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/web.ResponseBean'
-      summary: 创建image
-      tags:
-      - ceph rbd模块
   /rbd/{poolName}/{imageName}/{snapName}:
     delete:
       consumes:
@@ -438,6 +308,137 @@ paths:
       summary: 创建快照
       tags:
       - ceph snaphost模块
+  /rbd/image:
+    delete:
+      consumes:
+      - application/json
+      description: 删除image
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 删除image
+      tags:
+      - ceph rbd模块
+    post:
+      consumes:
+      - application/json
+      description: 创建image
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: query
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: query
+        name: imageName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 创建image
+      tags:
+      - ceph rbd模块
+  /rbd/image/{poolName}/{imageName}:
+    get:
+      consumes:
+      - application/json
+      description: 获取image信息
+      parameters:
+      - description: 连接配置
+        in: body
+        name: config
+        required: true
+        schema:
+          $ref: '#/definitions/web.ConnConfig'
+      - description: 池名称
+        in: path
+        name: poolName
+        required: true
+        type: string
+      - description: image名称
+        in: path
+        name: imageName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/web.ResponseBean'
+      summary: 获取image信息
+      tags:
+      - ceph rbd模块
   /rbd/images:
     post:
       consumes:

@@ -21,10 +21,10 @@ type IRbdService interface {
 	GetImageByName(config web.ConnConfig, poolName string) (int64, error)
 
 	//创建rbd image
-	CreateRbdImage(poolName string) error
+	CreateRbdImage(poolName, imageName string) error
 
 	//删除rbd image
-	DeleteImageByName(poolName string) error
+	DeleteImageByName(poolName, imageName string) error
 }
 
 // NewPoolService returns the default pool service.
@@ -43,10 +43,10 @@ func (r rbdService) GetImageByName(config web.ConnConfig, poolName string) (int6
 	panic("implement me")
 }
 
-func (r rbdService) CreateRbdImage(poolName string) error {
+func (r rbdService) CreateRbdImage(poolName, imageName string) error {
 	panic("implement me")
 }
 
-func (r rbdService) DeleteImageByName(poolName string) error {
+func (r rbdService) DeleteImageByName(poolName, imageName string) error {
 	panic("implement me")
 }

@@ -62,46 +62,28 @@ func (c *RbdController) PostImages() *web.ResponseBean {
 }
 
 // @tags ceph rbd模块
-// @Summary 获取image信息
-// @Description 获取image信息
-// @Accept  application/json
-// @Produce  application/json
-// @Param config body web.ConnConfig true "连接配置"
-// @Param poolName path string true "池名称"
-// @Param poolName path string true "image名称"
-// @Success 200 {object} web.ResponseBean
-// @Failure 400 {object} web.ResponseBean
-// @Failure 404 {object} web.ResponseBean
-// @Failure 500 {object} web.ResponseBean
-// @Router /rbd/{poolName}/{imageName} [get]
-func (c *RbdController) GetImageByName(config web.ConnConfig, poolName, imageName string) *web.ResponseBean {
-	var result *web.ResponseBean
-	pools, err := c.RbdService.GetImageByName(config, poolName)
-	if err != nil {
-		result = web.GenFailedMsg(err.Error())
-	} else {
-		result = web.GenSuccessMsg(pools)
-	}
-	log.Info("Response: ", result)
-	return result
-}
-
-// @tags ceph rbd模块
 // @Summary 创建image
 // @Description 创建image
 // @Accept  application/json
 // @Produce  application/json
 // @Param config body web.ConnConfig true "连接配置"
-// @Param poolName path string true "池名称"
-// @Param poolName path string true "image名称"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
 // @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /rbd/{poolName}/{imageName} [post]
-func (c *RbdController) CreateImage(config web.ConnConfig, poolName, imageName string) *web.ResponseBean {
+// @Router /rbd/image [post]
+func (c *RbdController) PostImage() *web.ResponseBean {
 	var result *web.ResponseBean
-	err := c.RbdService.CreateRbdImage(poolName)
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
+	err := c.RbdService.CreateRbdImage(poolName, imageName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
@@ -112,21 +94,28 @@ func (c *RbdController) CreateImage(config web.ConnConfig, poolName, imageName s
 }
 
 // @tags ceph rbd模块
-// @Summary 删除池
-// @Description 删除池
+// @Summary 删除image
+// @Description 删除image
 // @Accept  application/json
 // @Produce  application/json
 // @Param config body web.ConnConfig true "连接配置"
-// @Param poolName path string true "池名称"
-// @Param poolName path string true "image名称"
+// @Param poolName query string true "池名称"
+// @Param imageName query string true "image名称"
 // @Success 200 {object} web.ResponseBean
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /rbd/{poolName}/{imageName} [delete]
-func (c *RbdController) DeleteImage(config web.ConnConfig, poolName, imageName string) *web.ResponseBean {
+// @Router /rbd/image [delete]
+func (c *RbdController) DeleteImage() *web.ResponseBean {
 	var result *web.ResponseBean
-	err := c.RbdService.DeleteImageByName(poolName)
+	//通过context.ReadJSON()读取传过来的数据
+	var config web.ConnConfig
+	if err := c.Ctx.ReadJSON(&config); err != nil {
+		log.Error(err)
+	}
+	var poolName = c.Ctx.URLParam("poolName")
+	var imageName = c.Ctx.URLParam("imageName")
+	err := c.RbdService.DeleteImageByName(poolName, imageName)
 	if err != nil {
 		result = web.GenFailedMsg(err.Error())
 	} else {
