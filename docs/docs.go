@@ -891,7 +891,7 @@ var doc = `{
                 }
             }
         },
-        "/snap/unProtect": {
+        "/snap/unprotect": {
             "post": {
                 "description": "解锁快照",
                 "consumes": [

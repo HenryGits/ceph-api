@@ -611,7 +611,7 @@ paths:
       summary: 获取到所有的快照
       tags:
       - ceph snaphost模块
-  /snap/unProtect:
+  /snap/unprotect:
     post:
       consumes:
       - application/json
