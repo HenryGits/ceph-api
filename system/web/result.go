@@ -11,10 +11,11 @@ type ResponseBean struct {
 }
 
 const (
-	SUCCESS    = 200
-	NotFount   = 404
-	ERROR      = 500
-	BadRequest = 400
+	SUCCESS      = 200
+	BadRequest   = 400
+	UNAUTHORIZED = 401
+	NotFount     = 404
+	ERROR        = 500
 )
 
 func GenSuccess(msg string) *ResponseBean {
@@ -27,6 +28,10 @@ func GenSuccessMsg(data interface{}) *ResponseBean {
 
 func GenOperationErrorMsg() *ResponseBean {
 	return &ResponseBean{BadRequest, "Bad Request", ""}
+}
+
+func GenUnauthorizedMsg() *ResponseBean {
+	return &ResponseBean{UNAUTHORIZED, "Unauthorized", ""}
 }
 
 func GenNotFondMsg() *ResponseBean {
