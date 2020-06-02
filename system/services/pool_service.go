@@ -3,7 +3,6 @@ package services
 import (
 	"github.com/ceph/go-ceph/system/utils"
 	"github.com/ceph/go-ceph/system/web"
-	"github.com/kataras/iris"
 )
 
 /*
