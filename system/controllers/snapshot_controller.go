@@ -205,8 +205,8 @@ func (c *SnaphostController) PostProtect() *web.ResponseBean {
 // @Failure 400 {object} web.ResponseBean
 // @Failure 404 {object} web.ResponseBean
 // @Failure 500 {object} web.ResponseBean
-// @Router /snap/unProtect [post]
-func (c *SnaphostController) PostUnProtect() *web.ResponseBean {
+// @Router /snap/unprotect [post]
+func (c *SnaphostController) PostUnprotect() *web.ResponseBean {
 	var result *web.ResponseBean
 	//通过context.ReadJSON()读取传过来的数据
 	var config web.ConnConfig

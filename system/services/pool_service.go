@@ -9,25 +9,16 @@ import (
 	Ceph Pool Api操作
 */
 type IPoolService interface {
-	/*
-		/api/pool
-	*/
+	// 获取池列表
 	GetPools(config web.ConnConfig) ([]string, error)
 
-	/*
-		/api/pool/{pool_name}
-	*/
+	// 通过poolName获取pool信息
 	GetPoolByName(config web.ConnConfig, poolName string) (int64, error)
 
-	/*
-		创建ceph存储池
-		/api/pool
-	*/
+	// 建ceph存储池
 	AddPool(config web.ConnConfig, poolName string) error
 
-	/*
-		通过poolName删除数据库
-	*/
+	// 通过poolName删除pool
 	DeletePoolByName(config web.ConnConfig, poolName string) error
 }
 
