@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"github.com/ceph/go-ceph/system/services"
-	"github.com/ceph/go-ceph/system/utils"
-	"github.com/ceph/go-ceph/system/web"
+	"ceph-api/system/services"
+	"ceph-api/system/utils"
+	"ceph-api/system/web"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/sessions"
 )

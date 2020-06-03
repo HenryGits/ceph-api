@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/ceph/go-ceph/system/utils"
-	"github.com/ceph/go-ceph/system/web"
+	"ceph-api/system/utils"
+	"ceph-api/system/web"
 )
 
 /*

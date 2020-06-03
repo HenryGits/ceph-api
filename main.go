@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "github.com/ceph/go-ceph/docs"
-	"github.com/ceph/go-ceph/system/controllers"
-	"github.com/ceph/go-ceph/system/services"
+	_ "ceph-api/docs"
+	"ceph-api/system/controllers"
+	"ceph-api/system/services"
 	"github.com/dgrijalva/jwt-go"
 	jwtmiddleware "github.com/iris-contrib/middleware/jwt"
 	"github.com/iris-contrib/swagger/v12"
