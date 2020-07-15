@@ -31,7 +31,6 @@ type poolService struct {
 }
 
 func (p poolService) GetPools(config web.ConnConfig) ([]string, error) {
-	utils.Log.Info("==>GetPools")
 
 	//获取调go-ceph获取pool
 	conn, err := utils.GetConnection(config)

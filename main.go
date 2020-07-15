@@ -4,11 +4,14 @@ import (
 	_ "ceph-api/docs"
 	"ceph-api/system/controllers"
 	"ceph-api/system/services"
+	"ceph-api/system/utils"
+	"ceph-api/system/web"
 	"github.com/dgrijalva/jwt-go"
 	jwtmiddleware "github.com/iris-contrib/middleware/jwt"
 	"github.com/iris-contrib/swagger/v12"
 	"github.com/iris-contrib/swagger/v12/swaggerFiles"
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/mvc"
 )
 
@@ -26,7 +29,7 @@ func main() {
 	app := iris.New()
 	// You got full debug messages, useful when using MVC and you want to make
 	// sure that your code is aligned with the Iris' MVC Architecture.
-	app.Logger().SetLevel("debug")
+	app.Logger().SetLevel("info")
 
 	//jwt中间件
 	jwtHandler := jwtmiddleware.New(jwtmiddleware.Config{
@@ -41,28 +44,26 @@ func main() {
 		//加密的方式
 		SigningMethod: jwt.SigningMethodHS256,
 		//验证未通过错误处理方式
-		//ErrorHandler: func(context.Context, string)
-
-		//debug 模式
-		//Debug: bool
+		ErrorHandler: errorHandler,
 	})
 	//app.Use(jwtHandler.Serve)
 
-	// "/pool" based mvc application.
-	pool := mvc.New(app.Party("/api/pool"))
-	rbd := mvc.New(app.Party("/api/rbd"))
-	snap := mvc.New(app.Party("/api/snap"))
-	admin := mvc.New(app.Party("/api/admin"))
+	// based mvc application.
+	pool := mvc.New(app.Party("/api/pool", jwtHandler.Serve, httpHandler))
+	rbd := mvc.New(app.Party("/api/rbd", jwtHandler.Serve, httpHandler))
+	snap := mvc.New(app.Party("/api/snap", jwtHandler.Serve, httpHandler))
+	admin := mvc.New(app.Party("/api/admin", httpHandler))
+
+	// Register services and Handles
 	pool.Register(services.NewPoolService())
 	pool.Handle(new(controllers.PoolController))
-
 	rbd.Register(services.NewRbdService())
 	rbd.Handle(new(controllers.RbdController))
 	snap.Register(services.NewSnaphostService())
 	snap.Handle(new(controllers.SnaphostController))
 	admin.Handle(new(controllers.AdminController))
 
-	app.Get("/api/admin/login", jwtHandler.Serve, myAuthenticatedHandler)
+	//app.Get("/api/admin/login", jwtHandler.Serve, myAuthenticatedHandler)
 	//The url pointing to API definition
 	config := &swagger.Config{
 		URL: "/swagger/doc.json",
@@ -79,12 +80,22 @@ func main() {
 	)
 }
 
-func myAuthenticatedHandler(ctx iris.Context) {
-	user := ctx.Values().Get("jwt").(*jwt.Token)
-	ctx.Writef("This is an authenticated request\n")
-	ctx.Writef("Claim content:\n")
-	foobar := user.Claims.(jwt.MapClaims)
-	for key, value := range foobar {
-		ctx.Writef("%s = %s", key, value)
-	}
+func errorHandler(ctx context.Context, err error) {
+	//user := ctx.Values().Get("jwt").(*jwt.Token)
+	//ctx.Writef("This is an authenticated request\n")
+	//ctx.Writef("Claim content:\n")
+	//foobar := user.Claims.(jwt.MapClaims)
+	//for key, value := range foobar {
+	//	ctx.Writef("%s = %s", key, value)
+	//}
+	//if user == nil {
+	//	ctx.JSON(web.GenUnauthorizedMsg())
+	//}
+	utils.Log.Error("Token验证不通过: ", err)
+	ctx.JSON(web.GenUnauthorizedMsg())
+}
+
+func httpHandler(ctx context.Context) {
+	utils.Log.Info("Current Request Method==>: ", ctx.Request().URL)
+	ctx.Next()
 }
