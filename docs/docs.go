@@ -1024,7 +1024,7 @@ var doc = `{
                 "key": {
                     "type": "string",
                     "format": "Mgr 密钥Key",
-                    "example": "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA=="
+                    "example": "AQDzrN1eAUaLOhAAQ9y9mrYUPH1DqBYvrvtGug=="
                 },
                 "user": {
                     "type": "string",
@@ -1075,7 +1075,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "localhost:8080",
+	Host:        "",
 	BasePath:    "/api",
 	Schemes:     []string{},
 	Title:       "Ceph Rest Api",

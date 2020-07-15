@@ -15,7 +15,7 @@ import (
 // @title Ceph Rest Api
 // @version 1.0
 // @description 基于go-ceph封装的Rest Api
-// @host localhost:8080
+// #@host localhost:8080
 // @BasePath /api
 
 // @securityDefinitions.basic BasicAuth
@@ -55,6 +55,7 @@ func main() {
 	admin := mvc.New(app.Party("/api/admin"))
 	pool.Register(services.NewPoolService())
 	pool.Handle(new(controllers.PoolController))
+
 	rbd.Register(services.NewRbdService())
 	rbd.Handle(new(controllers.RbdController))
 	snap.Register(services.NewSnaphostService())
@@ -64,13 +65,13 @@ func main() {
 	app.Get("/api/admin/login", jwtHandler.Serve, myAuthenticatedHandler)
 	//The url pointing to API definition
 	config := &swagger.Config{
-		URL: "http://localhost:8080/swagger/doc.json",
+		URL: "/swagger/doc.json",
 	}
 	// use swagger middleware to
 	app.Get("/swagger/{any:path}", swagger.CustomWrapHandler(config, swaggerFiles.Handler))
 	app.Run(
 		// Starts the web server at localhost:8080
-		iris.Addr("localhost:8080"),
+		iris.Addr(":8080"),
 		// Ignores err server closed log when CTRL/CMD+C pressed.
 		iris.WithoutServerError(iris.ErrServerClosed),
 		// Enables faster json serialization and more.

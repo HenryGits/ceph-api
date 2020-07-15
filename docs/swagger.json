@@ -7,7 +7,6 @@
         "license": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
     "basePath": "/api",
     "paths": {
         "/admin/auth": {
@@ -1009,7 +1008,7 @@
                 "key": {
                     "type": "string",
                     "format": "Mgr 密钥Key",
-                    "example": "AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA=="
+                    "example": "AQDzrN1eAUaLOhAAQ9y9mrYUPH1DqBYvrvtGug=="
                 },
                 "user": {
                     "type": "string",

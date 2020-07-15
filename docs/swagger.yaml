@@ -7,7 +7,7 @@ definitions:
         format: Ceph Mgr ipaddr
         type: string
       key:
-        example: AQB+AsFew2rtHRAAwEpQAa1LOG9cYK7k66vtQA==
+        example: AQDzrN1eAUaLOhAAQ9y9mrYUPH1DqBYvrvtGug==
         format: Mgr 密钥Key
         type: string
       user:
@@ -27,7 +27,6 @@ definitions:
         format: 处理结果
         type: string
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: 基于go-ceph封装的Rest Api
